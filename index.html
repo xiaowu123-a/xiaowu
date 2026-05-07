@@ -1,0 +1,2214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>飞机号商场</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* ========== Header ========== */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .brand-logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #fff;
+            font-weight: bold;
+            overflow: hidden;
+            /* Show back of head - gradient simulates hair on back */
+            background: linear-gradient(180deg, #8B4513 0%, #D2691E 40%, #654321 100%);
+            position: relative;
+        }
+
+        .brand-logo::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 50%;
+            top: 0;
+            background: linear-gradient(180deg, #8B4513 0%, #A0522D 100%);
+            border-radius: 50% 50% 0 0;
+        }
+
+        .brand-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .brand-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #4A90D9;
+        }
+
+        .login-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            color: #4A90D9;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 6px 14px;
+            border: 1px solid #4A90D9;
+            border-radius: 20px;
+            transition: all 0.2s;
+        }
+
+        .login-btn:hover {
+            background: #4A90D9;
+            color: #fff;
+        }
+
+        .login-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* ========== Navigation ========== */
+        .nav-bar {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 8px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            color: #555;
+            font-size: 11px;
+            padding: 4px 6px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background: #f0f7ff;
+            color: #4A90D9;
+        }
+
+        .nav-item .nav-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .nav-item.active {
+            color: #4A90D9;
+        }
+
+        /* ========== Announcement ========== */
+        .announcement {
+            margin: 10px 12px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+        .announcement-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .announcement-header .announce-icon {
+            width: 20px;
+            height: 20px;
+            background: #ff9800;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 12px;
+        }
+
+        .announcement-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .announcement-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 10px;
+            background: #f0f7ff;
+            border-radius: 16px;
+            font-size: 12px;
+            color: #4A90D9;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .announcement-tag:hover,
+        .announcement-tag.active {
+            background: #4A90D9;
+            color: #fff;
+            border-color: #4A90D9;
+        }
+
+        .announcement-tag .tag-count {
+            margin-left: 4px;
+            background: rgba(255,255,255,0.3);
+            padding: 1px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+        }
+
+        .announcement-tag.active .tag-count {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* ========== Category Tabs ========== */
+        .category-tabs {
+            display: flex;
+            gap: 0;
+            padding: 0 12px;
+            margin-bottom: 8px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .category-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-tab {
+            flex-shrink: 0;
+            padding: 8px 14px;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .category-tab.active {
+            color: #4A90D9;
+            border-bottom-color: #4A90D9;
+            font-weight: 600;
+        }
+
+        /* ========== Product Section ========== */
+        .product-section {
+            margin: 0 12px 12px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 0;
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .section-icon {
+            width: 28px;
+            height: 28px;
+            background: #4A90D9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        /* ========== Product Table ========== */
+        .product-table {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 1fr 80px 60px 70px;
+            padding: 10px 12px;
+            background: #fafafa;
+            font-size: 12px;
+            color: #999;
+            font-weight: 500;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .table-header span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+
+        .table-header span:first-child {
+            justify-content: flex-start;
+        }
+
+        .table-header svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .product-row {
+            display: grid;
+            grid-template-columns: 1fr 80px 60px 70px;
+            padding: 12px;
+            align-items: center;
+            border-bottom: 1px solid #f5f5f5;
+            transition: background 0.15s;
+        }
+
+        .product-row:last-child {
+            border-bottom: none;
+        }
+
+        .product-row:hover {
+            background: #fafbff;
+        }
+
+        .product-name {
+            font-size: 13px;
+            color: #333;
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .product-name .tg-icon {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        .product-name .badge {
+            display: inline-block;
+            padding: 1px 5px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            font-size: 10px;
+            border-radius: 3px;
+            margin-left: 4px;
+            white-space: nowrap;
+        }
+
+        .product-name .recommend {
+            color: #ff9800;
+            font-size: 11px;
+            margin-left: 2px;
+        }
+
+        .product-price {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #E91E63;
+        }
+
+        .product-stock {
+            text-align: center;
+            font-size: 13px;
+            color: #4CAF50;
+            font-weight: 500;
+        }
+
+        .buy-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            padding: 5px 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 16px;
+            background: #fff;
+            color: #555;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .buy-btn:hover {
+            border-color: #4A90D9;
+            color: #4A90D9;
+            background: #f0f7ff;
+        }
+
+        .buy-btn svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        /* ========== Empty State ========== */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 8px;
+            opacity: 0.5;
+        }
+
+        /* ========== Payment QR Modal ========== */
+        .payment-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .payment-modal.show {
+            display: flex;
+        }
+
+        .payment-card {
+            background: #fff;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 360px;
+            overflow: hidden;
+            animation: scaleIn 0.3s ease;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .payment-header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .payment-header h3 {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .payment-header .amount {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .payment-header .order-id {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 8px;
+        }
+
+        .payment-body {
+            padding: 24px;
+            text-align: center;
+        }
+
+        .qr-container {
+            background: #fafafa;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .qr-code {
+            width: 180px;
+            height: 180px;
+            background: #fff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #999;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .qr-placeholder {
+            width: 160px;
+            height: 160px;
+            background: linear-gradient(135deg, #f5f5f5 25%, #e0e0e0 25%, #e0e0e0 50%, #f5f5f5 50%, #f5f5f5 75%, #e0e0e0 75%);
+            background-size: 20px 20px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #bbb;
+            font-size: 12px;
+        }
+
+        .qr-placeholder .icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+
+        .payment-method-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .payment-method-badge.alipay {
+            background: #e6f4ff;
+            color: #1677ff;
+        }
+
+        .payment-method-badge.wechat {
+            background: #e8f5e9;
+            color: #07c160;
+        }
+
+        .payment-tips {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .payment-tips .tip {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+            text-align: left;
+        }
+
+        .payment-tips .tip-icon {
+            color: #ff6b6b;
+        }
+
+        .countdown {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 16px;
+        }
+
+        .countdown span {
+            color: #ff6b6b;
+            font-weight: 600;
+        }
+
+        .payment-footer {
+            padding: 16px 24px 24px;
+            text-align: center;
+        }
+
+        .cancel-payment-btn {
+            width: 100%;
+            padding: 14px;
+            background: #f5f5f5;
+            color: #666;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cancel-payment-btn:hover {
+            background: #e0e0e0;
+        }
+
+        /* Payment Success */
+        .payment-success {
+            display: none;
+            text-align: center;
+            padding: 40px 24px;
+        }
+
+        .payment-success.show {
+            display: block;
+        }
+
+        .payment-success .icon {
+            width: 80px;
+            height: 80px;
+            background: #e8f5e9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+        }
+
+        .payment-success h3 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .payment-success p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .order-detail {
+            background: #f5f5f5;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .order-detail .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .order-detail .row:last-child {
+            margin-bottom: 0;
+        }
+
+        .order-detail .label {
+            color: #999;
+        }
+
+        .order-detail .value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .back-home-btn {
+            width: 100%;
+            padding: 14px;
+            background: #4A90D9;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .back-home-btn:hover {
+            background: #3a7bc8;
+        }
+
+        /* Crypto Payment */
+        .crypto-address {
+            background: #f5f5f5;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .crypto-address label {
+            font-size: 13px;
+            color: #666;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .crypto-address .address-box {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 12px;
+            word-break: break-all;
+            color: #333;
+            font-family: monospace;
+            position: relative;
+        }
+
+        .crypto-address .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #4A90D9;
+            color: #fff;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .crypto-amount {
+            background: #fff5f5;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .crypto-amount label {
+            font-size: 13px;
+            color: #666;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .crypto-amount .amount {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ff6b6b;
+        }
+
+        /* ========== Floating Action Button ========== */
+        .fab {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 52px;
+            height: 52px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 99;
+        }
+
+        .fab:hover {
+            transform: translateX(-50%) scale(1.1);
+            box-shadow: 0 6px 16px rgba(76, 175, 80, 0.5);
+        }
+
+        /* ========== Footer ========== */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #ccc;
+            font-size: 12px;
+            margin-bottom: 60px;
+        }
+
+        /* ========== Scrollbar ========== */
+        ::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
+        /* ========== Responsive ========== */
+        @media (min-width: 481px) {
+            body {
+                box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            }
+        }
+
+        /* ========== Purchase Modal ========== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: #fff;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 420px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: #f5f5f5;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .modal-body {
+            padding: 16px;
+        }
+
+        /* Product Info in Modal */
+        .product-info {
+            background: #fff5f5;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .product-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .product-title .tg-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .product-instructions {
+            background: #fff;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .product-instructions .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .product-instructions .step:last-child {
+            margin-bottom: 0;
+        }
+
+        .product-instructions .step-num {
+            width: 18px;
+            height: 18px;
+            background: #ff6b6b;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            flex-shrink: 0;
+        }
+
+        /* Price Info */
+        .price-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding: 12px 0;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .price-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .price-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #4CAF50;
+        }
+
+        .delivery-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: #e8f5e9;
+            color: #4CAF50;
+            font-size: 12px;
+            border-radius: 12px;
+        }
+
+        /* Contact Input */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: #ff6b6b;
+        }
+
+        .form-group input::placeholder {
+            color: #bbb;
+        }
+
+        /* Quantity Section */
+        .quantity-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding: 12px 0;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .quantity-section label {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .qty-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .qty-btn:hover {
+            border-color: #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .qty-input {
+            width: 50px;
+            height: 32px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .qty-input:focus {
+            border-color: #ff6b6b;
+        }
+
+        .stock-info {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        /* Total Amount */
+        .total-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #fff5f5;
+            border-radius: 10px;
+        }
+
+        .total-label {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .total-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #ff6b6b;
+        }
+
+        /* Customer Service */
+        .customer-service {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+
+        .customer-service a {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #4A90D9;
+            text-decoration: none;
+        }
+
+        .customer-service a:hover {
+            text-decoration: underline;
+        }
+
+        /* Payment Methods */
+        .payment-section {
+            margin-bottom: 16px;
+        }
+
+        .payment-title {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .payment-btn {
+            padding: 14px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .payment-btn:hover {
+            border-color: #4A90D9;
+            background: #f0f7ff;
+        }
+
+        .payment-btn.selected {
+            border-color: #ff6b6b;
+            background: #fff5f5;
+        }
+
+        .payment-btn .icon {
+            font-size: 18px;
+        }
+
+        .payment-btn .fee {
+            font-size: 10px;
+            color: #999;
+            margin-left: 4px;
+        }
+
+        .payment-btn.alipay { color: #1677ff; }
+        .payment-btn.wechat { color: #07c160; }
+        .payment-btn.trx { color: #eb4d4d; }
+        .payment-btn.usdt { color: #26a17b; }
+
+        /* Buy Button */
+        .buy-submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            transition: all 0.2s;
+        }
+
+        .buy-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
+        }
+
+        .buy-submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .buy-submit-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Success Modal */
+        .success-modal {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #e8f5e9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+        }
+
+        .success-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .success-msg {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .success-order {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .success-btn {
+            width: 100%;
+            padding: 14px;
+            background: #4A90D9;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .success-btn:hover {
+            background: #3a7bc8;
+        }
+
+        /* Loading State */
+        .btn-loading {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .btn-loading.show {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <a href="#" class="brand">
+            <div class="brand-logo">
+                <img src="avatar.png" alt="Wow" style="border-radius: 50%; object-fit: cover;">
+            </div>
+            <span class="brand-name">Wow</span>
+        </a>
+        <a href="login.html" class="login-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            登录
+        </a>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-bar">
+        <a href="#" class="nav-item">
+            <div class="nav-icon">🛒</div>
+            <span>购物</span>
+        </a>
+        <a href="#" class="nav-item">
+            <div class="nav-icon">🔍</div>
+            <span>查询</span>
+        </a>
+        <a href="#" class="nav-item active">
+            <div class="nav-icon">🛡️</div>
+            <span>2FA验证</span>
+        </a>
+        <a href="#" class="nav-item">
+            <div class="nav-icon">📲</div>
+            <span>APP下载</span>
+        </a>
+        <a href="#" class="nav-item">
+            <div class="nav-icon">📖</div>
+            <span>教程</span>
+        </a>
+        <a href="#" class="nav-item">
+            <div class="nav-icon">💬</div>
+            <span>客服</span>
+        </a>
+    </div>
+
+    <!-- Announcement -->
+    <div class="announcement">
+        <div class="announcement-header">
+            <div class="announce-icon">📢</div>
+            <span>公告</span>
+        </div>
+        <div class="announcement-list">
+            <div class="announcement-tag active" data-category="0">
+                TG飞机/APl/『1~30天以上』<span class="tag-count">(34)</span>
+            </div>
+            <div class="announcement-tag" data-category="1">
+                TG飞机/APl/『换绑区』<span class="tag-count">(1)</span>
+            </div>
+            <div class="announcement-tag" data-category="2">
+                TG飞机/APl/『180天以上』<span class="tag-count">(15)</span>
+            </div>
+            <div class="announcement-tag" data-category="3">
+                TG飞机/APl/『365天以上』<span class="tag-count">(14)</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="category-tabs">
+        <div class="category-tab active" data-tab="0">TG飞机/APl/『1~30天以上』</div>
+        <div class="category-tab" data-tab="1">TG飞机/APl/『换绑区』</div>
+        <div class="category-tab" data-tab="2">TG飞机/APl/『180天以上』</div>
+        <div class="category-tab" data-tab="3">TG飞机/APl/『365天以上』</div>
+    </div>
+
+    <!-- Product Sections Container -->
+    <div id="product-container">
+        <!-- Category 0: 1~30天以上 -->
+        <div class="product-section" data-section="0">
+            <div class="section-header">
+                <div class="section-icon">✈️</div>
+                <span>TG飞机/APl/『1~30天以上』</span>
+            </div>
+            <div class="product-table">
+                <div class="table-header">
+                    <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                        商品名称
+                    </span>
+                    <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        单价
+                    </span>
+                    <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        库存
+                    </span>
+                    <span>操作</span>
+                </div>
+                <div class="product-row">
+                    <div class="product-name">
+                        <svg class="tg-icon" viewBox="0 0 24 24" fill="#4A90D9"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                        【双向号】🏴‍☠️混合国家老号 撸羊毛<span class="badge">热门</span>
+                    </div>
+                    <div class="product-price">￥22.8</div>
+                    <div class="product-stock">115</div>
+                    <a href="#" class="buy-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        购买
+                    </a>
+                </div>
+                <div class="product-row">
+                    <div class="product-name">
+                        <svg class="tg-icon" viewBox="0 0 24 24" fill="#4A90D9"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                        美国+1🇺🇸 精养月号
+                    </div>
+                    <div class="product-price">￥26.6</div>
+                    <div class="product-stock">2569</div>
+                    <a href="#" class="buy-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        购买
+                    </a>
+                </div>
+                <div class="product-row">
+                    <div class="product-name">
+                        <svg class="tg-icon" viewBox="0 0 24 24" fill="#4A90D9"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                        缅甸+95🇲🇲 精养月号
+                    </div>
+                    <div class="product-price">￥25.6</div>
+                    <div class="product-stock">1404</div>
+                    <a href="#" class="buy-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        购买
+                    </a>
+                </div>
+                <div class="product-row">
+                    <div class="product-name">
+                        <svg class="tg-icon" viewBox="0 0 24 24" fill="#4A90D9"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                        马来西亚+60🇲🇾 月号
+                    </div>
+                    <div class="product-price">￥28.8</div>
+                    <div class="product-stock">1036</div>
+                    <a href="#" class="buy-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        购买
+                    </a>
+                </div>
+                <div class="product-row">
+                    <div class="product-name">
+                        <svg class="tg-icon" viewBox="0 0 24 24" fill="#4A90D9"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                        泰国+66🇹🇭 精养月号
+                    </div>
+                    <div class="product-price">￥32.79</div>
+                    <div class="product-stock">889</div>
+                    <a href="#" class="buy-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        购买
+                    </a>
+                </div>
+                <div class="product-row">
+                    <div class="product-name">
+                        <svg class="tg-icon" viewBox="0 0 24 24" fill="#4A90D9"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                        英国+44🇬🇧 精养月号 <span class="recommend">稳定推荐</span>
+                    </div>
+                    <div class="product-price">￥35.79</div>
+                    <div class="product-stock">393</div>
+                    <a href="#" class="buy-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        购买
+                    </a>
+                </div>
+                <div class="product-row">
+                    <div class="product-name">
+                        <svg class="tg-icon" viewBox="0 0 24 24" fill="#4A90D9"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                        摩洛哥+212🇲🇦 月号
+                    </div>
+                    <div class="product-price">￥26</div>
+                    <div class="product-stock">1152</div>
+                    <a href="#" class="buy-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        购买
+                    </a>
+                </div>
+                <div class="product-row">
+                    <div class="product-name">
+                        <svg class="tg-icon" viewBox="0 0 24 24" fill="#4A90D9"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                        印度尼西亚+62🇮🇩 月号
+                    </div>
+                    <div class="product-price">￥25.6</div>
+                    <div class="product-stock">722</div>
+                    <a href="#" class="buy-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        购买
+                    </a>
+                </div>
+                <div class="product-row">
+                    <div class="product-name">
+                        <svg class="tg-icon" viewBox="0 0 24 24" fill="#4A90D9"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                        肯尼亚+254🇰🇪 月号
+                    </div>
+                    <div class="product-price">￥24.5</div>
+                    <div class="product-stock">541</div>
+                    <a href="#" class="buy-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        购买
+                    </a>
+                </div>
+                <div class="product-row">
+                    <div class="product-name">
+                        <svg class="tg-icon" viewBox="0 0 24 24" fill="#4A90D9"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                        尼泊尔+977🇳🇵 月号
+                    </div>
+                    <div class="product-price">￥29.9</div>
+                    <div class="product-stock">397</div>
+                    <a href="#" class="buy-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        购买
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category 1: 换绑区 (hidden by default) -->
+        <div class="product-section" data-section="1" style="display:none;">
+            <div class="section-header">
+                <div class="section-icon">✈️</div>
+                <span>TG飞机/APl/『换绑区』</span>
+            </div>
+            <div class="product-table">
+                <div class="table-header">
+                    <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                        商品名称
+                    </span>
+                    <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        单价
+                    </span>
+                    <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        库存
+                    </span>
+                    <span>操作</span>
+                </div>
+                <div class="empty-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                    <p>暂无商品</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category 2: 180天以上 (hidden by default) -->
+        <div class="product-section" data-section="2" style="display:none;">
+            <div class="section-header">
+                <div class="section-icon">✈️</div>
+                <span>TG飞机/APl/『180天以上』</span>
+            </div>
+            <div class="product-table">
+                <div class="table-header">
+                    <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                        商品名称
+                    </span>
+                    <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        单价
+                    </span>
+                    <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        库存
+                    </span>
+                    <span>操作</span>
+                </div>
+                <div class="product-row">
+                    <div class="product-name">
+                        <svg class="tg-icon" viewBox="0 0 24 24" fill="#4A90D9"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                        斯里兰卡+94🇱🇰 精养180天+
+                    </div>
+                    <div class="product-price">￥35.79</div>
+                    <div class="product-stock">114</div>
+                    <a href="#" class="buy-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        购买
+                    </a>
+                </div>
+                <div class="product-row">
+                    <div class="product-name">
+                        <svg class="tg-icon" viewBox="0 0 24 24" fill="#4A90D9"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                        埃及+20🇪🇬 精养180天+
+                    </div>
+                    <div class="product-price">￥34.79</div>
+                    <div class="product-stock">130</div>
+                    <a href="#" class="buy-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        购买
+                    </a>
+                </div>
+                <div class="product-row">
+                    <div class="product-name">
+                        <svg class="tg-icon" viewBox="0 0 24 24" fill="#4A90D9"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                        英国+44🇬🇧 精养180天+ <span class="recommend">稳定推荐</span>
+                    </div>
+                    <div class="product-price">￥39.98</div>
+                    <div class="product-stock">71</div>
+                    <a href="#" class="buy-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        购买
+                    </a>
+                </div>
+                <div class="product-row">
+                    <div class="product-name">
+                        <svg class="tg-icon" viewBox="0 0 24 24" fill="#4A90D9"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                        泰国+66🇹🇭 精养180天+
+                    </div>
+                    <div class="product-price">￥35.79</div>
+                    <div class="product-stock">969</div>
+                    <a href="#" class="buy-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        购买
+                    </a>
+                </div>
+                <div class="product-row">
+                    <div class="product-name">
+                        <svg class="tg-icon" viewBox="0 0 24 24" fill="#4A90D9"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                        南非+27🇿🇦 精养180天+
+                    </div>
+                    <div class="product-price">￥28.8</div>
+                    <div class="product-stock">242</div>
+                    <a href="#" class="buy-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        购买
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category 3: 365天以上 (hidden by default) -->
+        <div class="product-section" data-section="3" style="display:none;">
+            <div class="section-header">
+                <div class="section-icon">✈️</div>
+                <span>TG飞机/APl/『365天以上』</span>
+            </div>
+            <div class="product-table">
+                <div class="table-header">
+                    <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                        商品名称
+                    </span>
+                    <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        单价
+                    </span>
+                    <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        库存
+                    </span>
+                    <span>操作</span>
+                </div>
+                <div class="empty-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                    <p>暂无商品</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        © 2026 Wow商城
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="fab" title="客服">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </div>
+
+    <!-- Purchase Modal -->
+    <div class="modal-overlay" id="purchaseModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">确认订单</div>
+                <button class="modal-close" id="closeModal">×</button>
+            </div>
+            <div class="modal-body">
+                <!-- Product Info -->
+                <div class="product-info">
+                    <div class="product-title">
+                        <svg class="tg-icon" viewBox="0 0 24 24" fill="#4A90D9"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                        <span id="modalProductName">【双向号】🏴‍☠️混合国家老号 撸羊毛</span>
+                    </div>
+                    <div class="product-instructions">
+                        <div class="step">
+                            <span class="step-num">1</span>
+                            <span>下单之后保留下支付凭证</span>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">2</span>
+                            <span>留下您的正确联系方式</span>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">3</span>
+                            <span>客服会联系您的</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Price Info -->
+                <div class="price-section">
+                    <div>
+                        <div class="price-label">商品单价</div>
+                        <div class="price-value" id="modalPrice">￥22.8</div>
+                    </div>
+                    <div class="delivery-badge">
+                        <span>📱</span> 自动发货
+                    </div>
+                </div>
+
+                <!-- Contact Input -->
+                <div class="form-group">
+                    <label>联系方式</label>
+                    <input type="text" id="contactInput" placeholder="请输入您的任意联系方式（QQ/微信/邮箱）">
+                </div>
+
+                <!-- Quantity -->
+                <div class="quantity-section">
+                    <label>购买数量</label>
+                    <div class="quantity-control">
+                        <button class="qty-btn" id="qtyMinus">−</button>
+                        <input type="number" class="qty-input" id="qtyInput" value="1" min="1">
+                        <button class="qty-btn" id="qtyPlus">+</button>
+                    </div>
+                </div>
+                <div class="stock-info">库存：<span id="modalStock">115</span> 件</div>
+
+                <!-- Total -->
+                <div class="total-section">
+                    <div class="total-label">订单金额</div>
+                    <div class="total-value" id="modalTotal">￥22.8</div>
+                </div>
+
+                <!-- Customer Service -->
+                <div class="customer-service">
+                    <a href="#">💬 QQ客服</a>
+                    <a href="#">🌐 网页客服</a>
+                </div>
+
+                <!-- Payment Methods -->
+                <div class="payment-section">
+                    <div class="payment-title">选择支付方式</div>
+                    <div class="payment-methods">
+                        <button class="payment-btn alipay selected" data-method="alipay" data-fee="1.08">
+                            <span class="icon">💙</span>
+                            <span>支付宝</span>
+                            <span class="fee">+%8手续费</span>
+                        </button>
+                        <button class="payment-btn wechat" data-method="wechat" data-fee="1.08">
+                            <span class="icon">💚</span>
+                            <span>微信</span>
+                            <span class="fee">+%8手续费</span>
+                        </button>
+                        <button class="payment-btn trx" data-method="trx" data-fee="1">
+                            <span class="icon">🔴</span>
+                            <span>TRX</span>
+                            <span class="fee">无手续费</span>
+                        </button>
+                        <button class="payment-btn usdt" data-method="usdt" data-fee="1">
+                            <span class="icon">💧</span>
+                            <span>USDT</span>
+                            <span class="fee">无手续费</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button class="buy-submit-btn" id="submitPurchase">
+                    <span class="btn-loading" id="btnLoading"></span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    <span id="submitText">确认购买</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal">
+            <div class="success-modal">
+                <div class="success-icon">✓</div>
+                <div class="success-title">购买成功！</div>
+                <div class="success-msg">请等待自动发货，验证码将在5分钟内发送到您的联系方式</div>
+                <div class="success-order" id="successOrder">
+                    订单号：WD2026050700001<br>
+                    支付方式：支付宝<br>
+                    实付金额：￥22.80
+                </div>
+                <button class="success-btn" id="closeSuccess">我知道了</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment QR Modal -->
+    <div class="payment-modal" id="paymentModal">
+        <div class="payment-card" id="paymentContent">
+            <!-- Payment Info (shown during payment) -->
+            <div class="payment-info">
+                <div class="payment-header">
+                    <h3>扫码支付</h3>
+                    <div class="amount" id="paymentAmount">￥24.62</div>
+                    <div class="order-id" id="paymentOrderId">订单号：WD2026050700001</div>
+                </div>
+                <div class="payment-body">
+                    <div class="payment-method-badge" id="paymentMethodBadge">
+                        <span>💙</span>
+                        <span id="paymentMethodName">支付宝</span>
+                    </div>
+                    <div class="qr-container">
+                        <div class="qr-code" id="qrCode">
+                            <div class="qr-placeholder" id="qrPlaceholder">
+                                <div class="icon">📱</div>
+                                <div>二维码加载中...</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="payment-tips">
+                        <div class="tip">
+                            <span class="tip-icon">⏱️</span>
+                            <span>请在 <span id="countdownTime">15:00</span> 内完成支付</span>
+                        </div>
+                        <div class="tip">
+                            <span class="tip-icon">📋</span>
+                            <span>保存二维码图片，扫描支付</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="payment-footer">
+                    <button class="cancel-payment-btn" id="cancelPayment">取消支付</button>
+                </div>
+            </div>
+            
+            <!-- Payment Success (hidden by default) -->
+            <div class="payment-success" id="paymentSuccessPanel">
+                <div class="icon">🎉</div>
+                <h3>支付成功！</h3>
+                <p>我们将尽快为您发货，请保持联系方式畅通</p>
+                <div class="order-detail" id="finalOrderDetail">
+                    <div class="row">
+                        <span class="label">订单号</span>
+                        <span class="value" id="finalOrderId">WD2026050700001</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">商品</span>
+                        <span class="value" id="finalProduct">美国+1🇺🇸 精养月号</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">支付金额</span>
+                        <span class="value" id="finalAmount">￥26.60</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">联系方式</span>
+                        <span class="value" id="finalContact">QQ: 123456</span>
+                    </div>
+                </div>
+                <button class="back-home-btn" id="backHome">返回首页</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching logic
+        const announcementTags = document.querySelectorAll('.announcement-tag');
+        const categoryTabs = document.querySelectorAll('.category-tab');
+        const productSections = document.querySelectorAll('.product-section');
+
+        function switchCategory(index) {
+            // Update announcement tags
+            announcementTags.forEach(tag => tag.classList.remove('active'));
+            announcementTags[index].classList.add('active');
+
+            // Update category tabs
+            categoryTabs.forEach(tab => tab.classList.remove('active'));
+            categoryTabs[index].classList.add('active');
+
+            // Show/hide product sections
+            productSections.forEach(section => {
+                section.style.display = section.dataset.section == index ? 'block' : 'none';
+            });
+
+            // Scroll tab into view
+            categoryTabs[index].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+
+        announcementTags.forEach((tag, index) => {
+            tag.addEventListener('click', () => switchCategory(index));
+        });
+
+        categoryTabs.forEach((tab, index) => {
+            tab.addEventListener('click', () => switchCategory(index));
+        });
+
+        // ========== Purchase Modal Logic ==========
+        const purchaseModal = document.getElementById('purchaseModal');
+        const successModal = document.getElementById('successModal');
+        const closeModalBtn = document.getElementById('closeModal');
+        const closeSuccessBtn = document.getElementById('closeSuccess');
+        const submitBtn = document.getElementById('submitPurchase');
+        const btnLoading = document.getElementById('btnLoading');
+        const submitText = document.getElementById('submitText');
+
+        // Modal elements
+        const modalProductName = document.getElementById('modalProductName');
+        const modalPrice = document.getElementById('modalPrice');
+        const modalStock = document.getElementById('modalStock');
+        const modalTotal = document.getElementById('modalTotal');
+        const qtyInput = document.getElementById('qtyInput');
+        const qtyMinus = document.getElementById('qtyMinus');
+        const qtyPlus = document.getElementById('qtyPlus');
+        const contactInput = document.getElementById('contactInput');
+        const paymentBtns = document.querySelectorAll('.payment-btn');
+
+        let currentPrice = 22.8;
+        let currentStock = 115;
+        let selectedPayment = 'alipay';
+        let paymentFee = 1.08;
+
+        // Open purchase modal
+        document.querySelectorAll('.buy-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Get product info from the row
+                const row = btn.closest('.product-row');
+                const productName = row.querySelector('.product-name').textContent.trim();
+                const priceText = row.querySelector('.product-price').textContent.replace('￥', '');
+                const stockText = row.querySelector('.product-stock').textContent;
+                
+                currentPrice = parseFloat(priceText);
+                currentStock = parseInt(stockText);
+                
+                // Update modal
+                modalProductName.textContent = productName;
+                modalPrice.textContent = '￥' + currentPrice.toFixed(2);
+                modalStock.textContent = currentStock;
+                qtyInput.value = 1;
+                qtyInput.max = currentStock;
+                updateTotal();
+                
+                // Show modal
+                purchaseModal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        // Close modal
+        closeModalBtn.addEventListener('click', () => {
+            purchaseModal.classList.remove('show');
+            document.body.style.overflow = '';
+        });
+
+        purchaseModal.addEventListener('click', (e) => {
+            if (e.target === purchaseModal) {
+                purchaseModal.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Quantity controls
+        qtyMinus.addEventListener('click', () => {
+            let qty = parseInt(qtyInput.value);
+            if (qty > 1) {
+                qtyInput.value = qty - 1;
+                updateTotal();
+            }
+        });
+
+        qtyPlus.addEventListener('click', () => {
+            let qty = parseInt(qtyInput.value);
+            if (qty < currentStock) {
+                qtyInput.value = qty + 1;
+                updateTotal();
+            }
+        });
+
+        qtyInput.addEventListener('change', () => {
+            let qty = parseInt(qtyInput.value);
+            if (qty < 1) qtyInput.value = 1;
+            if (qty > currentStock) qtyInput.value = currentStock;
+            updateTotal();
+        });
+
+        function updateTotal() {
+            const qty = parseInt(qtyInput.value) || 1;
+            const total = currentPrice * qty * paymentFee;
+            modalTotal.textContent = '￥' + total.toFixed(2);
+        }
+
+        // Payment method selection
+        paymentBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                paymentBtns.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedPayment = btn.dataset.method;
+                paymentFee = parseFloat(btn.dataset.fee);
+                updateTotal();
+            });
+        });
+
+        // ========== Payment Modal Elements ==========
+        const paymentModal = document.getElementById('paymentModal');
+        const paymentInfo = document.querySelector('.payment-info');
+        const paymentSuccessPanel = document.getElementById('paymentSuccessPanel');
+        const paymentAmount = document.getElementById('paymentAmount');
+        const paymentOrderId = document.getElementById('paymentOrderId');
+        const paymentMethodBadge = document.getElementById('paymentMethodBadge');
+        const paymentMethodName = document.getElementById('paymentMethodName');
+        const qrPlaceholder = document.getElementById('qrPlaceholder');
+        const countdownTime = document.getElementById('countdownTime');
+        const cancelPaymentBtn = document.getElementById('cancelPayment');
+        const backHomeBtn = document.getElementById('backHome');
+        const finalOrderId = document.getElementById('finalOrderId');
+        const finalProduct = document.getElementById('finalProduct');
+        const finalAmount = document.getElementById('finalAmount');
+        const finalContact = document.getElementById('finalContact');
+
+        let countdownInterval;
+        let currentOrderData = {};
+
+        // Submit purchase - opens payment modal & sends email
+        submitBtn.addEventListener('click', async () => {
+            const contact = contactInput.value.trim();
+            
+            if (!contact) {
+                alert('请输入联系方式！');
+                contactInput.focus();
+                return;
+            }
+
+            // Show loading
+            submitBtn.disabled = true;
+            btnLoading.classList.add('show');
+            submitText.textContent = '提交中...';
+
+            const qty = parseInt(qtyInput.value) || 1;
+            const total = (currentPrice * qty * paymentFee).toFixed(2);
+
+            // 调用后端API创建订单并发送邮件
+            try {
+                const response = await fetch('http://localhost:3000/api/orders/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        productId: 1,
+                        productName: modalProductName.textContent,
+                        quantity: qty,
+                        contact: contact,
+                        paymentMethod: selectedPayment,
+                        amount: parseFloat(total)
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!result.success) {
+                    alert('下单失败：' + (result.message || '请稍后重试'));
+                    submitBtn.disabled = false;
+                    btnLoading.classList.remove('show');
+                    submitText.textContent = '确认购买';
+                    return;
+                }
+
+                const orderId = result.data.orderId;
+
+                const paymentNames = {
+                    'alipay': '支付宝',
+                    'wechat': '微信支付',
+                    'trx': 'TRX',
+                    'usdt': 'USDT-TRC20'
+                };
+
+                const paymentIcons = {
+                    'alipay': '💙',
+                    'wechat': '💚',
+                    'trx': '🔴',
+                    'usdt': '💧'
+                };
+
+                // Store order data
+                currentOrderData = {
+                    orderId,
+                    productName: modalProductName.textContent,
+                    price: currentPrice,
+                    qty,
+                    total,
+                    paymentMethod: selectedPayment,
+                    paymentName: paymentNames[selectedPayment],
+                    contact
+                };
+
+                // Update payment modal
+                paymentAmount.textContent = '￥' + total;
+                paymentOrderId.textContent = '订单号：' + orderId;
+                paymentMethodBadge.className = 'payment-method-badge ' + selectedPayment;
+                paymentMethodBadge.querySelector('span:first-child').textContent = paymentIcons[selectedPayment];
+                paymentMethodName.textContent = paymentNames[selectedPayment];
+
+                // Show crypto or QR code based on payment method
+                if (selectedPayment === 'trx' || selectedPayment === 'usdt') {
+                    qrPlaceholder.innerHTML = `
+                        <div class="crypto-address" style="margin-bottom: 12px;">
+                            <label>${selectedPayment === 'trx' ? 'TRX' : 'USDT (TRC20)'} 收款地址</label>
+                            <div class="address-box">
+                                ${selectedPayment === 'trx' ? 'TXqwertyuiopASDFGHJKLzxcvbnm1234567890' : 'TXqwertyuiopASDFGHJKLzxcvbnm1234567890'}
+                                <button class="copy-btn" onclick="copyAddress(this)">复制</button>
+                            </div>
+                        </div>
+                        <div class="crypto-amount">
+                            <label>应付金额</label>
+                            <div class="amount">${selectedPayment === 'trx' ? '50' : '1'} ${selectedPayment.toUpperCase()}</div>
+                        </div>
+                    `;
+                } else {
+                    qrPlaceholder.innerHTML = `
+                        <div style="font-size: 11px; color: #666; margin-bottom: 8px;">请用${paymentNames[selectedPayment]}扫码支付</div>
+                        <div style="width: 120px; height: 120px; background: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                            <div style="font-size: 40px;">${paymentIcons[selectedPayment]}</div>
+                            <div style="font-size: 10px; color: #999; margin-top: 4px;">QR</div>
+                        </div>
+                    `;
+                }
+
+                // Reset to payment info view
+                paymentInfo.style.display = 'block';
+                paymentSuccessPanel.classList.remove('show');
+
+                // Close purchase modal, show payment modal
+                purchaseModal.classList.remove('show');
+                paymentModal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+
+                // Start countdown
+                startCountdown();
+
+            } catch (error) {
+                console.error('下单请求失败:', error);
+                // 如果后端不可用，仍然允许下单（前端模式）
+                const orderId = 'WD' + new Date().getFullYear() + 
+                    String(new Date().getMonth() + 1).padStart(2, '0') + 
+                    String(new Date().getDate()).padStart(2, '0') + 
+                    String(Math.floor(Math.random() * 10000)).padStart(4, '0');
+
+                currentOrderData = {
+                    orderId,
+                    productName: modalProductName.textContent,
+                    price: currentPrice,
+                    qty,
+                    total,
+                    paymentMethod: selectedPayment,
+                    paymentName: { 'alipay': '支付宝', 'wechat': '微信支付', 'trx': 'TRX', 'usdt': 'USDT-TRC20' }[selectedPayment],
+                    contact
+                };
+
+                paymentAmount.textContent = '￥' + total;
+                paymentOrderId.textContent = '订单号：' + orderId;
+
+                purchaseModal.classList.remove('show');
+                paymentModal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+                startCountdown();
+            }
+
+            // Reset button
+            submitBtn.disabled = false;
+            btnLoading.classList.remove('show');
+            submitText.textContent = '确认购买';
+        });
+
+        // Countdown timer
+        function startCountdown() {
+            clearInterval(countdownInterval);
+            let seconds = 900; // 15 minutes
+            
+            countdownInterval = setInterval(() => {
+                seconds--;
+                if (seconds <= 0) {
+                    clearInterval(countdownInterval);
+                    countdownTime.textContent = '已过期';
+                    return;
+                }
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                countdownTime.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        // Simulate payment success (for demo)
+        function simulatePaymentSuccess() {
+            setTimeout(() => {
+                showPaymentSuccess();
+            }, 5000); // Auto-success after 5 seconds (demo only)
+        }
+
+        // Show payment success
+        function showPaymentSuccess() {
+            clearInterval(countdownInterval);
+            
+            // Update final order details
+            finalOrderId.textContent = currentOrderData.orderId;
+            finalProduct.textContent = currentOrderData.productName.substring(0, 15) + '...';
+            finalAmount.textContent = '￥' + currentOrderData.total;
+            finalContact.textContent = currentOrderData.contact;
+
+            // Show success panel
+            paymentInfo.style.display = 'none';
+            paymentSuccessPanel.classList.add('show');
+        }
+
+        // Cancel payment
+        cancelPaymentBtn.addEventListener('click', () => {
+            clearInterval(countdownInterval);
+            paymentModal.classList.remove('show');
+            document.body.style.overflow = '';
+            purchaseModal.classList.add('show');
+        });
+
+        // Back to home
+        backHomeBtn.addEventListener('click', () => {
+            paymentModal.classList.remove('show');
+            document.body.style.overflow = '';
+            contactInput.value = '';
+            qtyInput.value = 1;
+        });
+
+        // Copy address function
+        window.copyAddress = function(btn) {
+            const address = btn.parentElement.textContent.replace('复制', '').trim();
+            navigator.clipboard.writeText(address).then(() => {
+                btn.textContent = '已复制!';
+                setTimeout(() => btn.textContent = '复制', 2000);
+            });
+        };
+
+        // Close success modal
+        closeSuccessBtn.addEventListener('click', () => {
+            successModal.classList.remove('show');
+            document.body.style.overflow = '';
+            contactInput.value = '';
+            qtyInput.value = 1;
+        });
+
+        successModal.addEventListener('click', (e) => {
+            if (e.target === successModal) {
+                successModal.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // FAB (customer service)
+        document.querySelector('.fab').addEventListener('click', () => {
+            alert('客服功能开发中...');
+        });
+    </script>
+
+</body>
+</html>
